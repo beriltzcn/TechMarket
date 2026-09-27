@@ -1,0 +1,60 @@
+@model Product
+
+<article class="tm-product-card">
+    <a class="tm-media @(string.IsNullOrEmpty(Model.ImageUrl) ? "tm-media-empty" : "")"
+       asp-controller="Product" asp-action="Details" asp-route-id="@Model.Id">
+        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+        {
+            <img src="@Model.ImageUrl" alt="@Model.Name" />
+        }
+        else
+        {
+            <span class="tm-media-brand">@Model.Brand</span>
+        }
+
+        @if (Model.HasDiscount)
+        {
+            <span class="tm-flag">@($"%{Model.DiscountPercent} off")</span>
+        }
+
+        @if (Model.Stock == 0)
+        {
+            <span class="tm-flag tm-flag-out">Sold out</span>
+        }
+    </a>
+
+    <div class="tm-card-body">
+        <p class="tm-cat">@Model.Category</p>
+
+        <a asp-controller="Product" asp-action="Details" asp-route-id="@Model.Id">
+            <h3 class="tm-title">@Model.Name</h3>
+        </a>
+
+        <div class="tm-rating">
+            <span>@Model.Brand</span>
+        </div>
+
+        <div class="tm-price-row">
+            @if (Model.HasDiscount)
+            {
+                <span class="tm-price-old">@Model.Price.ToString("N0") ₺</span>
+            }
+            <span class="tm-price @(Model.HasDiscount ? "tm-price-sale" : "")">
+                @Model.EffectivePrice.ToString("N0") ₺
+            </span>
+        </div>
+
+        <div class="tm-card-foot">
+            @if (Model.Stock > 0)
+            {
+                <span class="tm-stock">In stock: @Model.Stock</span>
+            }
+            else
+            {
+                <span class="tm-stock tm-stock-out">Out of stock</span>
+            }
+
+            <a class="tm-cta" asp-controller="Product" asp-action="Details" asp-route-id="@Model.Id">View</a>
+        </div>
+    </div>
+</article>

@@ -1,0 +1,69 @@
+@{
+    var currentSearch = Context.Request.Query["q"].ToString();
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - TechMarket</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <div class="tm-topbar">
+            <div class="container d-flex justify-content-between align-items-center py-2">
+                <span>Free shipping on orders over ₺500</span>
+                <nav class="tm-topbar-links">
+                    <a href="#">Our stores</a>
+                    <a href="#">Order tracking</a>
+                    <a href="#">Help</a>
+                </nav>
+            </div>
+        </div>
+
+        <div class="tm-header">
+            <div class="container tm-header-inner">
+                <a class="tm-logo" asp-controller="Home" asp-action="Index">
+                    <span class="tm-logo-mark">TM</span>
+                    <span class="tm-logo-text">Tech<b>Market</b></span>
+                </a>
+
+                <form class="tm-search" asp-controller="Product" asp-action="Index" method="get" role="search">
+                    <input type="search" name="q" value="@currentSearch"
+                           placeholder="Search by product name or brand..." aria-label="Search products" />
+                    <button type="submit">Search</button>
+                </form>
+
+                <div class="tm-head-actions">
+                    <a href="#"><span aria-hidden="true">👤</span> Sign in</a>
+                    <a href="#"><span aria-hidden="true">🛒</span> My cart</a>
+                </div>
+            </div>
+        </div>
+
+        <nav class="tm-nav">
+            <div class="container tm-nav-inner">
+                @await Component.InvokeAsync("CategoryMenu")
+            </div>
+        </nav>
+    </header>
+
+    <main role="main">
+        @RenderBody()
+    </main>
+
+    <footer class="tm-footer">
+        <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <span>&copy; @DateTime.Now.Year TechMarket — All prices include VAT.</span>
+            <span><a asp-controller="Home" asp-action="Privacy">Privacy</a></span>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

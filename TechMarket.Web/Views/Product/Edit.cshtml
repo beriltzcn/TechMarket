@@ -1,0 +1,114 @@
+@model Product
+
+@{
+    ViewData["Title"] = "Edit Product";
+}
+
+<div class="tm-page">
+    <div class="container">
+        <div class="tm-crumbs">
+            <a asp-controller="Home" asp-action="Index">Home</a>
+            <span>/</span>
+            <a asp-controller="Product" asp-action="Index">Products</a>
+            <span>/</span>
+            <a asp-controller="Product" asp-action="Details" asp-route-id="@Model.Id">@Model.Name</a>
+            <span>/</span>
+            <span>Edit</span>
+        </div>
+
+        <div class="tm-page-head">
+            <div>
+                <h1>Edit product</h1>
+                <p>@Model.Name</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="tm-panel">
+                    <form asp-controller="Product" asp-action="Edit" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        @* The id travels with the form so the POST action knows which row to update. *@
+                        <input type="hidden" asp-for="Id" />
+                        @* Only used to keep the image preview alive when validation fails. *@
+                        <input type="hidden" asp-for="ImageUrl" />
+
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label"></label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Brand" class="form-label"></label>
+                                <input asp-for="Brand" class="form-control" />
+                                <span asp-validation-for="Brand" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Category" class="form-label"></label>
+                                <input asp-for="Category" class="form-control" />
+                                <span asp-validation-for="Category" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="Price" class="form-label"></label>
+                                <input asp-for="Price" class="form-control" />
+                                <div class="form-text">List price.</div>
+                                <span asp-validation-for="Price" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="DiscountPrice" class="form-label"></label>
+                                <input asp-for="DiscountPrice" class="form-control" />
+                                <div class="form-text">Leave empty for no discount.</div>
+                                <span asp-validation-for="DiscountPrice" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="Stock" class="form-label"></label>
+                                <input asp-for="Stock" class="form-control" />
+                                <div class="form-text">Units in stock.</div>
+                                <span asp-validation-for="Stock" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label"></label>
+                            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ImageFile" class="form-label"></label>
+
+                            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                            {
+                                <div class="mb-2">
+                                    <img src="@Model.ImageUrl" alt="@Model.Name"
+                                         class="border rounded" style="max-height: 160px;" />
+                                    <div class="form-text">Current image.</div>
+                                </div>
+                            }
+
+                            <input asp-for="ImageFile" type="file" accept=".jpg,.jpeg,.png,.webp" class="form-control" />
+                            <div class="form-text">JPG, PNG or WEBP. Maximum 2 MB. Leave empty to keep the current image.</div>
+                            <span asp-validation-for="ImageFile" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Save</button>
+                        <a asp-controller="Product" asp-action="Details" asp-route-id="@Model.Id"
+                           class="btn btn-outline-secondary">Cancel</a>
+                        <a asp-controller="Product" asp-action="Delete" asp-route-id="@Model.Id"
+                           class="btn btn-outline-danger">Delete</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

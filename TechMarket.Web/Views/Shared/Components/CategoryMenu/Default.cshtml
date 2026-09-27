@@ -1,0 +1,13 @@
+@model List<string>
+@{
+    var active = Context.Request.Query["category"].ToString();
+}
+
+<a asp-controller="Product" asp-action="Index"
+   class="tm-nav-link @(string.IsNullOrEmpty(active) ? "tm-nav-on" : "")">All products</a>
+
+@foreach (var category in Model)
+{
+    <a asp-controller="Product" asp-action="Index" asp-route-category="@category"
+       class="tm-nav-link @(active == category ? "tm-nav-on" : "")">@category</a>
+}

@@ -1,0 +1,101 @@
+@model ProductDetailsViewModel
+
+@{
+    var product = Model.Product;
+    ViewData["Title"] = product.Name;
+}
+
+<div class="tm-page">
+    <div class="container">
+        <div class="tm-crumbs">
+            <a asp-controller="Home" asp-action="Index">Home</a>
+            <span>/</span>
+            <a asp-controller="Product" asp-action="Index">Products</a>
+            <span>/</span>
+            <a asp-controller="Product" asp-action="Index" asp-route-category="@product.Category">@product.Category</a>
+            <span>/</span>
+            <span>@product.Name</span>
+        </div>
+
+        <div class="tm-detail">
+            <div class="tm-detail-media @(string.IsNullOrEmpty(product.ImageUrl) ? "tm-media-empty" : "")">
+                @if (!string.IsNullOrEmpty(product.ImageUrl))
+                {
+                    <img src="@product.ImageUrl" alt="@product.Name" />
+                }
+                else
+                {
+                    <span class="tm-media-brand">@product.Brand</span>
+                }
+
+                @if (product.Stock == 0)
+                {
+                    <span class="tm-flag tm-flag-out">Sold out</span>
+                }
+            </div>
+
+            <div class="tm-detail-info">
+                <p class="tm-cat">@product.Category</p>
+                <h1>@product.Name</h1>
+                <p class="tm-detail-brand">@product.Brand</p>
+
+                <div class="tm-detail-price">
+                    @if (product.HasDiscount)
+                    {
+                        <span class="tm-price-old">@product.Price.ToString("N0") ₺</span>
+                        <span class="tm-discount-tag">@($"%{product.DiscountPercent} off")</span>
+                    }
+                    <span class="tm-price-xl @(product.HasDiscount ? "tm-price-sale" : "")">
+                        @product.EffectivePrice.ToString("N0") ₺
+                    </span>
+                    <span class="tm-price-note">VAT included</span>
+                </div>
+
+                <p class="tm-detail-stock @(product.Stock == 0 ? "tm-stock-out" : "")">
+                    @(product.Stock > 0 ? $"✓ In stock: {product.Stock}" : "✕ Out of stock")
+                </p>
+
+                <div class="tm-detail-actions">
+                    <button class="btn btn-primary btn-lg" type="button" disabled>Add to cart</button>
+                    <a class="btn btn-outline-secondary btn-lg"
+                       asp-controller="Product" asp-action="Edit" asp-route-id="@product.Id">Edit</a>
+                    <a class="btn btn-outline-danger btn-lg"
+                       asp-controller="Product" asp-action="Delete" asp-route-id="@product.Id">Delete</a>
+                </div>
+
+                <ul class="tm-detail-points">
+                    <li>✓ Same-day shipping</li>
+                    <li>✓ 14-day free returns</li>
+                    <li>✓ 2-year warranty</li>
+                </ul>
+            </div>
+        </div>
+
+        <section class="tm-panel">
+            <h2>Product description</h2>
+            <p>
+                @(string.IsNullOrWhiteSpace(product.Description)
+                    ? "No description has been added for this product yet."
+                    : product.Description)
+            </p>
+        </section>
+
+        @if (Model.RelatedProducts.Count > 0)
+        {
+            <section class="tm-panel tm-panel-plain">
+                <div class="tm-section-head">
+                    <h2>Related products</h2>
+                    <a asp-controller="Product" asp-action="Index"
+                       asp-route-category="@product.Category">See all →</a>
+                </div>
+
+                <div class="tm-grid">
+                    @foreach (var related in Model.RelatedProducts)
+                    {
+                        <partial name="_ProductCard" model="related" />
+                    }
+                </div>
+            </section>
+        }
+    </div>
+</div>

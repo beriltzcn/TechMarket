@@ -1,0 +1,132 @@
+@model ProductListViewModel
+
+@{
+    ViewData["Title"] = "Products";
+
+    // Paging links keep the current filters.
+    Dictionary<string, string> RouteForPage(int page)
+    {
+        var values = new Dictionary<string, string> { ["page"] = page.ToString() };
+
+        if (!string.IsNullOrWhiteSpace(Model.Search)) values["q"] = Model.Search;
+        if (!string.IsNullOrWhiteSpace(Model.Sort)) values["sort"] = Model.Sort;
+        if (!string.IsNullOrWhiteSpace(Model.Category)) values["category"] = Model.Category;
+
+        return values;
+    }
+}
+
+<div class="tm-page">
+    <div class="container">
+        <div class="tm-crumbs">
+            <a asp-controller="Home" asp-action="Index">Home</a>
+            <span>/</span>
+            <a asp-controller="Product" asp-action="Index">Products</a>
+            @if (!string.IsNullOrWhiteSpace(Model.Category))
+            {
+                <span>/</span>
+                <span>@Model.Category</span>
+            }
+        </div>
+
+        <div class="tm-page-head">
+            <div>
+                <h1>@(string.IsNullOrWhiteSpace(Model.Category) ? "All products" : Model.Category)</h1>
+                <p>
+                    <b>@Model.TotalCount</b> products found
+                    @if (!string.IsNullOrWhiteSpace(Model.Search))
+                    {
+                        <span>— for "@Model.Search"</span>
+                    }
+                </p>
+            </div>
+            <a class="tm-btn-accent" asp-controller="Product" asp-action="Create">Add product</a>
+        </div>
+
+        <div class="tm-layout">
+            <aside class="tm-filters">
+                <form asp-controller="Product" asp-action="Index" method="get">
+                    <div class="tm-filter-block">
+                        <h2>Search products</h2>
+                        <input class="form-control" type="search" name="q" value="@Model.Search"
+                               placeholder="Name or brand..." />
+                    </div>
+
+                    <div class="tm-filter-block">
+                        <h2>Category</h2>
+                        <label class="tm-radio">
+                            <input type="radio" name="category" value="" checked="@(string.IsNullOrWhiteSpace(Model.Category))" />
+                            <span>All</span>
+                        </label>
+                        @foreach (var category in Model.Categories)
+                        {
+                            <label class="tm-radio">
+                                <input type="radio" name="category" value="@category"
+                                       checked="@(Model.Category == category)" />
+                                <span>@category</span>
+                            </label>
+                        }
+                    </div>
+
+                    <div class="tm-filter-block">
+                        <h2>Sort by</h2>
+                        <select class="form-select" name="sort">
+                            <option value="name" selected="@(string.IsNullOrEmpty(Model.Sort) || Model.Sort == "name")">Name (A-Z)</option>
+                            <option value="name_desc" selected="@(Model.Sort == "name_desc")">Name (Z-A)</option>
+                            <option value="price_asc" selected="@(Model.Sort == "price_asc")">Price: low to high</option>
+                            <option value="price_desc" selected="@(Model.Sort == "price_desc")">Price: high to low</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 mb-2">Apply filter</button>
+                    <a class="btn btn-outline-secondary w-100" asp-controller="Product" asp-action="Index">Clear</a>
+                </form>
+            </aside>
+
+            <section>
+                <div class="tm-results-bar">
+                    <span><b>@Model.TotalCount</b> products shown</span>
+                    <span>Page @Model.PageIndex of @Math.Max(Model.TotalPages, 1)</span>
+                </div>
+
+                @if (Model.Products.Count == 0)
+                {
+                    <div class="alert mb-0">
+                        No products match your search.
+                        <a asp-controller="Product" asp-action="Index">Show all products</a>.
+                    </div>
+                }
+                else
+                {
+                    <div class="tm-grid">
+                        @foreach (var product in Model.Products)
+                        {
+                            <partial name="_ProductCard" model="product" />
+                        }
+                    </div>
+
+                    @if (Model.TotalPages > 1)
+                    {
+                        <nav class="tm-pager">
+                            @if (Model.HasPrevious)
+                            {
+                                <a asp-all-route-data="RouteForPage(Model.PageIndex - 1)">← Previous</a>
+                            }
+
+                            @for (var i = 1; i <= Model.TotalPages; i++)
+                            {
+                                <a asp-all-route-data="RouteForPage(i)"
+                                   class="@(i == Model.PageIndex ? "tm-page-on" : "")">@i</a>
+                            }
+
+                            @if (Model.HasNext)
+                            {
+                                <a asp-all-route-data="RouteForPage(Model.PageIndex + 1)">Next →</a>
+                            }
+                        </nav>
+                    }
+                }
+            </section>
+        </div>
+    </div>
+</div>
