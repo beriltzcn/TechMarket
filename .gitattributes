@@ -69,9 +69,10 @@
 # Third-party libraries are not our code. Keep them out of the language bar.
 TechMarket.Web/wwwroot/lib/** linguist-vendored
 
-# Razor views are markup, not the language this project is written in.
-*.cshtml linguist-detectable=false
-TechMarket.Web/Views/** linguist-detectable=false
+# Razor views are C# templates, not plain HTML. GitHub classifies .cshtml as
+# HTML by default, which misrepresents an ASP.NET Core project.
+*.cshtml linguist-language=C#
+TechMarket.Web/Views/** linguist-language=C#
 
 # Markdown and solution files are documentation, not source code.
 *.md linguist-documentation
