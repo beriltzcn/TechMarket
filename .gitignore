@@ -368,4 +368,4 @@ FodyWeavers.xsd
 *.db-wal
 
 # --- Uploaded product images ---
-wwwroot/images/products/
+**/wwwroot/images/products/

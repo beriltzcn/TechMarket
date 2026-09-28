@@ -61,3 +61,16 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+
+###############################################################################
+# GitHub language statistics (Linguist)
+###############################################################################
+
+# Third-party libraries are not our code. Keep them out of the language bar.
+TechMarket.Web/wwwroot/lib/** linguist-vendored
+
+# Razor views are markup, not the language this project is written in.
+*.cshtml linguist-detectable=false
+
+# Markdown and solution files are documentation, not source code.
+*.md linguist-documentation
