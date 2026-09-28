@@ -72,9 +72,8 @@ TechMarket.Web/wwwroot/lib/** linguist-vendored
 # Razor views are markup. Keep them out of the language bar so the bar
 # reflects the server-side code instead.
 #
-# NOTE: GitHub currently ignores this override for .cshtml (verified with
-# three different patterns). The line is kept because it is the correct
-# declaration and will apply if GitHub ever honours it.
+# NOTE: Linguist reads .gitattributes from the repository's DEFAULT branch.
+# If the default branch is not the one carrying these rules, they are ignored.
 *.cshtml linguist-detectable=false
 
 # Markdown and solution files are documentation, not source code.
