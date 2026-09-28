@@ -47,6 +47,8 @@ namespace TechMarket.Web.Models
         [Display(Name = "Product image")]
         public IFormFile? ImageFile { get; set; }
 
+        public List<ProductSpecification> Specifications { get; set; } = new();
+
         [NotMapped]
         public bool HasDiscount => DiscountPrice is > 0 && DiscountPrice < Price;
 

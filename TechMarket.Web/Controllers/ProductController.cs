@@ -58,14 +58,15 @@ namespace TechMarket.Web.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
-            var product = await _db.Products.FirstOrDefaultAsync(p => p.Id == id);
+            var product = await _db.Products
+                .Include(p => p.Specifications)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
             if (product is null)
             {
                 return NotFound();
             }
 
-            // Same category, excluding itself, the three most expensive ones.
             var relatedProducts = await _db.Products
                 .Where(p => p.Category == product.Category && p.Id != product.Id)
                 .OrderByDescending(p => p.Price)
@@ -81,7 +82,6 @@ namespace TechMarket.Web.Controllers
             return View(viewModel);
         }
 
-        // GET: /Product  (the default route sends this to the Index action)
         public async Task<IActionResult> Index(string? q, string? sort, string? category, int page = 1)
         {
             const int pageSize = 4;
@@ -89,7 +89,7 @@ namespace TechMarket.Web.Controllers
 
             if(!string.IsNullOrWhiteSpace(q))
             {
-                // ToLower on both sides makes the search case-insensitive.
+                
                 var term = q.Trim().ToLowerInvariant();
                 query = query.Where(p => p.Name.ToLower().Contains(term) || p.Brand.ToLower().Contains(term));
             }
@@ -179,9 +179,11 @@ namespace TechMarket.Web.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
-            var product = await _db.Products.FindAsync(id);
+            var product = await _db.Products
+                .Include(p => p.Specifications)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
-            if(product is null)
+            if (product is null)
             {
                 return NotFound();
             }
@@ -232,6 +234,55 @@ namespace TechMarket.Web.Controllers
 
             return RedirectToAction("Details", new { id = existing.Id });
 
+        }
+
+        // POST: /Product/AddSpecification
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddSpecification(int productId, string name, string value)
+        {
+            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(value))
+            {
+                TempData["SpecError"] = "Both the specification name and its value are required.";
+                return RedirectToAction("Edit", new { id = productId });
+            }
+
+            var productExists = await _db.Products.AnyAsync(p => p.Id == productId);
+            if (!productExists)
+            {
+                return NotFound();
+            }
+
+            _db.ProductSpecifications.Add(new ProductSpecification
+            {
+                ProductId = productId,
+                Name = name.Trim(),
+                Value = value.Trim(),
+            });
+
+            await _db.SaveChangesAsync();
+
+            return RedirectToAction("Edit", new { id = productId });
+        }
+
+        // POST: /Product/DeleteSpecification
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteSpecification(int id)
+        {
+            var specification = await _db.ProductSpecifications.FindAsync(id);
+
+            if (specification is null)
+            {
+                return NotFound();
+            }
+
+            var productId = specification.ProductId;
+
+            _db.ProductSpecifications.Remove(specification);
+            await _db.SaveChangesAsync();
+
+            return RedirectToAction("Edit", new { id = productId });
         }
 
         /// <summary>

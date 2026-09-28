@@ -9,19 +9,29 @@ namespace TechMarket.Web.Data
         {
         }
 
-    public DbSet<Product> Products => Set<Product>();
+        public DbSet<Product> Products => Set<Product>();
 
-    protected override void OnModelCreating (ModelBuilder modelBuilder)
-    {
-        base.OnModelCreating(modelBuilder);
+        public DbSet<ProductSpecification> ProductSpecifications => Set<ProductSpecification>();
 
-        modelBuilder.Entity<Product>(entity =>
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            entity.Property(p => p.Price).HasColumnType("decimal(18,2)");
-            entity.HasIndex(p => p.Name); 
-        });
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Product>(entity =>
+            {
+                entity.Property(p => p.Price).HasColumnType("decimal(18,2)");
+                entity.HasIndex(p => p.Name);
+            });
+
+            modelBuilder.Entity<ProductSpecification>(entity =>
+            {
+                // One product has many specifications.
+                // Deleting a product also deletes its specifications.
+                entity.HasOne(s => s.Product)
+                      .WithMany(p => p.Specifications)
+                      .HasForeignKey(s => s.ProductId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+        }
     }
-
 }
-}
-

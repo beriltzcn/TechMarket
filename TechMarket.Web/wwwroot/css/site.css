@@ -940,3 +940,26 @@ a:hover {
     padding: 3px 10px;
     border-radius: 999px;
 }
+
+/* --------------------------- Specifications --------------------------- */
+
+.tm-specs {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tm-specs th,
+.tm-specs td {
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--tm-line);
+    font-size: .87rem;
+    vertical-align: middle;
+}
+
+.tm-specs th {
+    width: 240px;
+    color: var(--tm-muted);
+    font-weight: 600;
+    background: var(--tm-bg);
+}

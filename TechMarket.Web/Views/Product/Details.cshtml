@@ -78,7 +78,26 @@
                     ? "No description has been added for this product yet."
                     : product.Description)
             </p>
+
         </section>
+
+                @if (product.Specifications.Count > 0)
+        {
+            <section class="tm-panel">
+                <h2>Technical specifications</h2>
+                <table class="tm-specs">
+                    <tbody>
+                        @foreach (var spec in product.Specifications.OrderBy(s => s.Id))
+                        {
+                            <tr>
+                                <th>@spec.Name</th>
+                                <td>@spec.Value</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </section>
+        }
 
         @if (Model.RelatedProducts.Count > 0)
         {
