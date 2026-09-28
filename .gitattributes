@@ -64,17 +64,13 @@
 
 ###############################################################################
 # GitHub language statistics (Linguist)
+#
+# NOTE: Linguist reads .gitattributes from the repository's DEFAULT branch.
+# If the default branch is not the one carrying these rules, they are ignored.
 ###############################################################################
 
 # Third-party libraries are not our code. Keep them out of the language bar.
 TechMarket.Web/wwwroot/lib/** linguist-vendored
-
-# Razor views are markup. Keep them out of the language bar so the bar
-# reflects the server-side code instead.
-#
-# NOTE: Linguist reads .gitattributes from the repository's DEFAULT branch.
-# If the default branch is not the one carrying these rules, they are ignored.
-*.cshtml linguist-detectable=false
 
 # Markdown and solution files are documentation, not source code.
 *.md linguist-documentation
