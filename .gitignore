@@ -366,6 +366,3 @@ FodyWeavers.xsd
 *.db
 *.db-shm
 *.db-wal
-
-# --- Uploaded product images ---
-**/wwwroot/images/products/
