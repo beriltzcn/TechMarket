@@ -71,6 +71,7 @@ TechMarket.Web/wwwroot/lib/** linguist-vendored
 
 # Razor views are markup, not the language this project is written in.
 *.cshtml linguist-detectable=false
+TechMarket.Web/Views/** linguist-detectable=false
 
 # Markdown and solution files are documentation, not source code.
 *.md linguist-documentation
